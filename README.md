@@ -138,6 +138,7 @@ python3 scripts/parse_bookmark_hierarchy.py
 | **代理** | | |
 | proxy.http | HTTP 代理地址 | 空 |
 | proxy.https | HTTPS 代理地址 | 空 |
+| proxy.no_proxy | 不走代理的地址列表 | `127.0.0.1,localhost` |
 
 ### 配置示例
 
@@ -258,23 +259,7 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 | ④ 书签 | 图片转换（PDG→PDF） | `pip install Pillow` |
 | ⑤ 上传 | 文件存储 + 直链 | [Z-File](https://github.com/zhaojun1998/zfile) / Nextcloud / MinIO |
 | ⑤ 上传 | 内网穿透（外网分享） | [cpolar](https://cpolar.com) / Cloudflare Tunnel / frp |
-| ⑥ 报告 | 消息通道 | Telegram Bot API / 飞书 / 企业微信 |
-
-### 环境变量（Agent 加载 skill 前配置）
-
-```bash
-# 下载管理器
-export DOWNLOAD_MANAGER_URL="http://localhost:7788"
-export DOWNLOAD_API_KEY="sk-xxxxxxxx"
-
-# 上传服务
-export UPLOAD_SERVICE_URL="http://your-zfile-host:32771"
-export UPLOAD_TOKEN="your-auth-token"
-
-# 代理（如需要）
-export http_proxy="http://127.0.0.1:7890"
-export https_proxy="http://127.0.0.1:7890"
-```
+| ⑥ 报告 | 消息通道 | qqbot / telegram / feishu |
 
 ---
 
