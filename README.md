@@ -283,83 +283,94 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 几个在实战中验证过的关键结论，避免踩坑：EbookDatabase 的 `second_pass_code` 不是 Anna's Archive 可用的 MD5 格式，下载必须从 Anna's Archive 搜索页直接提取 32 位十六进制 MD5。PaddleOCR 在多线程下（`--jobs > 1`）会 100% 静默产生乱码，强制 `--jobs 1` 是 OCR 命令里最重要的一行。Ghostscript 的 `pdfwrite` 会彻底摧毁 CJK 文字层——207 页中文 PDF 实测全部 CJK=0，完整实证见 `references/ghostscript-ocr-corruption.md`，压缩只能用 `ocrmypdf --optimize 1` 或 `qpdf --recompress-flate`。书葵网书签是扁平文本没有缩进，必须用命名规则推断层级（"第X部分 > 第X章 > 第X节 > 一、"），旧的 Tab 缩进法完全无效。
 
-## 常见问题排查
+## ❓ 常见问题排查
 
 如果管道在某一步中断，下面是按步骤组织的排查指南。
 
-### 步骤①：检索元数据
+<details>
+<summary><b>步骤①：检索元数据失败</b></summary>
 
 **症状：** 输入书名后返回「未找到」。
 
-先确认数据源可用。如果依赖本地数据库，测试连通性：`curl http://localhost:10223/search?q=测试`。如果返回空或超时，检查数据库服务是否在运行。
+1. 确认数据源可用：`curl http://localhost:10223/search?q=测试`
+2. 如果返回空或超时，检查数据库服务是否在运行
+3. 如果数据库正常但搜不到结果，去掉书名中的标点符号重试
+4. NLC 主要收录学术专著——通俗小说、网络文学通常查不到
 
-如果数据库正常但搜不到结果，尝试换检索词。书名中的标点符号（如「·」「——」）可能导致模糊搜索失败，去掉标点重试。
+</details>
 
-如果依赖 NLC 联合编目，注意 NLC 主要收录学术专著和政府出版物——通俗小说、网络文学、外文原版书通常查不到，这不是 bug。
-
-### 步骤②：下载 PDF
+<details>
+<summary><b>步骤②：下载 PDF 失败</b></summary>
 
 **症状：** Anna's Archive 搜索返回空或超时。
 
-Anna's Archive 域名在部分地区被封锁。确认代理环境变量（`http_proxy`、`https_proxy`）已设置且代理端口正确。可以先用 `curl -x http://127.0.0.1:7890 https://annas-archive.gd` 测试代理是否通。
+1. 确认代理环境变量已设置：`echo $http_proxy`
+2. 测试代理连通性：`curl -x http://127.0.0.1:7890 https://annas-archive.gd`
+3. 如果代理正常但仍超时，可能是 Anna's Archive 维护中，等待 1-2 小时
 
-如果代理正常但仍超时，可能是 Anna's Archive 本身宕机。它偶尔会维护，等待 1-2 小时后重试。
+**症状：** 下载管理器不响应。
 
-**症状：** 下载管理器不响应（连接拒绝）。
+1. 运行 `docker ps | grep stacks` 确认容器在跑
+2. 如果没在跑，`docker start stacks` 启动它
+3. 参考 [stacks 部署指南](https://github.com/annas-archive/stacks)
 
-下载管理器通常以 Docker 容器运行。运行 `docker ps | grep stacks` 确认容器在跑。如果没在跑，`docker start stacks` 启动它。
+</details>
 
-如果根本没装下载管理器，参考 [stacks 部署指南](https://github.com/annas-archive/stacks)。部署后需要先导入一些 MD5 才能测试下载功能。
+<details>
+<summary><b>步骤③：OCR 识别失败</b></summary>
 
-**症状：** 下载完成但文件是 `.zip` 且无法直接打开。
+**症状：** OCR 后中文文字层全是乱码。
 
-正常现象。管道会自动检测文件类型——zip 内是单文件 PDF 则自动提取并重命名为 `.pdf`，zip 内是 PDG/JPG 图片组则自动合成为 PDF。如果自动检测失败，手动用 `file downloaded.zip` 查看真实类型，用 `unzip -l downloaded.zip` 查看内容。详细错误分类与常见场景见 `references/download-troubleshooting.md`。
+1. 99% 的情况是因为 `--jobs` 参数 > 1，强制使用 `--jobs 1`
+2. 如果仍然乱码，检查 PaddleOCR 版本，降级到 2.8.x 试试
+3. 大 PDF（>500 页）OOM 时用 `--pages 1-50`、`--pages 51-100` 分批 OCR
 
-### 步骤③：OCR
+**症状：** Ghostscript 摧毁 OCR 文字层。
 
-**症状：** OCR 后中文文字层全是乱码/空白。
+完整实证见 `references/ghostscript-ocr-corruption.md`，压缩只能用 `ocrmypdf --optimize 1` 或 `qpdf --recompress-flate`。
 
-这是最常见的 OCR 问题。99% 的情况是因为 `--jobs` 参数 > 1。PaddleOCR 在多线程下存在编码损坏的 bug，强制使用 `--jobs 1`。
+</details>
 
-如果已经用了 `--jobs 1` 但仍然乱码，检查 PaddleOCR 版本。3.0+ 的 `predict()` 返回值格式有变化，需要确认 ocrmypdf-paddleocr 插件是否兼容。可以降级到 PaddleOCR 2.8.x 试试。
-
-**症状：** OCR 进程被 kill（OOM）。
-
-大 PDF（>500 页）OCR 时内存消耗大。解决方案：用 `--pages 1-50`、`--pages 51-100` 等分批 OCR，最后用 pikepdf 合并。每批 50 页是一个安全的值。
-
-**症状：** 报 `KeyError: 'text_word_region'` 或 `ZeroDivisionError`。
-
-前者是 PaddleOCR 2.9.1+ 的 `return_word_box=True` API 变化，需要 patch `ocrmypdf_paddleocr/engine.py`。后者是部分 PDF 元数据 DPI=0 导致的，ocrmypdf 新版已内置补丁，升级到最新版即可。WSL2 用户还要注意 `/tmp` 目录可能被 systemd 自动清理——改用固定目录如 `~/tmp/ocrmypdf`。关于 Ghostscript 摧毁 OCR 文字层的完整实证，见 `references/ghostscript-ocr-corruption.md`。
-
-### 步骤④：书签注入
+<details>
+<summary><b>步骤④：书签注入失败</b></summary>
 
 **症状：** pikepdf 报 `PdfError` 或权限错误。
 
-PDF 可能设置了所有者密码（即使打开不需要密码）。用 `qpdf --decrypt input.pdf output.pdf` 移除限制后重试。注意这不能破解用户密码，只能移除编辑/打印限制。
+1. 用 `qpdf --decrypt input.pdf output.pdf` 移除限制后重试
+2. 完整排查指南见 `references/bookmark-troubleshooting.md`
 
 **症状：** 注入的书签页码对不上。
 
-PDF 的「逻辑页码」和「物理页码」可能不一致。比如封面、目录、前言用罗马数字（i, ii, iii），正文从第1页开始。如果书签中的页码指的是印刷页码但 offset 错位，检查 PDF 的前几页是否是非正文内容，调整罗马数字页的偏移量。完整排查指南见 `references/bookmark-troubleshooting.md`，覆盖 7 种常见失败场景。
+1. 检查 PDF 的前几页是否是非正文内容（封面、目录、前言）
+2. 调整罗马数字页的偏移量
 
-### 步骤⑤：上传与直链
+</details>
+
+<details>
+<summary><b>步骤⑤：上传与直链失败</b></summary>
 
 **症状：** 上传返回 401/403。
 
-认证凭证过期或格式不对。如果服务用 Bearer Token，确认 `UPLOAD_TOKEN` 值完整。如果服务用 Cookie 认证，Cookie 通常只有几小时有效期，需要重新登录获取。
+1. 确认 `UPLOAD_TOKEN` 值完整
+2. Cookie 认证通常只有几小时有效期，需要重新登录
 
 **症状：** 直链生成后外网打不开。
 
-内网穿透隧道可能离线。检查 cpolar/frp 进程：`ps aux | grep cpolar`。如果隧道在线但直链仍不可达，可能是 cpolar 免费隧道的域名发生了变化（免费版域名不固定）。
+1. 检查 cpolar/frp 进程：`ps aux | grep cpolar`
+2. 免费隧道的域名可能发生变化（免费版域名不固定）
 
-### 通用调试方法
+</details>
 
-如果以上都不适用，按以下顺序定位：
+<details>
+<summary><b>通用调试方法</b></summary>
 
-1. **确认基础设施存活。** 逐个检查：数据库、下载管理器、上传服务、代理。用 `curl` 测试每个端点的可达性。
-2. **检查网络路径。** Agent 运行在 Docker/沙盒中时，`localhost` 指向容器自身而非宿主机。需改用 `host.docker.internal` 或宿主机实际 IP。
-3. **核对环境变量。** `env | grep -E 'DOWNLOAD|UPLOAD'` 查看相关变量是否已设置且值正确。
-4. **用已知可用输入复现。** 用一个确定在 Anna's Archive 上存在的 ISBN 跑完整管道，排除特定图书导致的问题。
-5. **查看 SKILL.md 中各步骤的「失败处理」章节。** 每个步骤都有详细的错误场景和处置方案。
+1. **确认基础设施存活：** 逐个检查数据库、下载管理器、上传服务、代理
+2. **检查网络路径：** Docker/沙盒中 `localhost` 指向容器自身，需改用 `host.docker.internal`
+3. **核对环境变量：** `env | grep -E 'DOWNLOAD|UPLOAD'` 查看相关变量
+4. **用已知可用输入复现：** 用一个确定存在的 ISBN 跑完整管道
+5. **查看 SKILL.md 失败处理章节：** 每个步骤都有详细的错误场景和处置方案
+
+</details>
 
 ---
 
