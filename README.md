@@ -65,32 +65,55 @@ graph TD
 
 ---
 
-## 快速开始
+## 🚀 快速开始
 
-**最简单的方式：把下面这段话原样发给你的 AI Agent。**
+### 方式一：AI Agent 一键安装（推荐）
 
-> 帮我安装 ebook-downloader。仓库地址：https://github.com/Callioper/ebook-downloader
+将下面这段话原样发给你的 AI Agent：
+
+> 帮我安装 ebook-downloader。仓库地址：https://github.com/Callioper/agent-ebook-downloader
 >
 > 1. 把整个仓库 clone 到你能读取的 skills 目录——不只要 SKILL.md，scripts/ 和 references/ 也要。
 > 2. 装完运行 `python3 scripts/parse_bookmark_hierarchy.py`，确认能输出测试结果。
 > 3. 引导我完成功能选配：逐项问数据库、下载管理器、OCR、书签、上传、通知——每项只问一遍，有就给对接命令，没有就给降级方案。
 > 4. 输出环境变量模板和使用指南（包含启动下载、单步操作、首次测试、预期输出的示例），让我保存。
 
-**用命令行安装（支持 skills 的 Agent）：**
+### 方式二：命令行安装（支持 skills 的 Agent）
 
 ```bash
-npx skills add Callioper/ebook-downloader
+npx skills add Callioper/agent-ebook-downloader
 ```
 
-适用于 Claude Code、Codex、Cursor、Windsurf 等 50+ 种 Agent。手动安装的话，`git clone https://github.com/Callioper/ebook-downloader` 到你的 skills 目录即可。
+适用于 Claude Code、Codex、Cursor、Windsurf 等 50+ 种 Agent。手动安装的话，`git clone https://github.com/Callioper/agent-ebook-downloader` 到你的 skills 目录即可。
 
-**快速配置：** 将 `config.yaml.example` 复制为 `config.yaml`，填入你的环境参数（EbookDatabase 地址、stacks API Key、通知渠道配置等）。运行 `python3 scripts/config_reader.py` 确认配置状态。
+### 方式三：手动安装
 
-**验证安装：** 运行 `python3 scripts/parse_bookmark_hierarchy.py` 输出 4 组测试，确认 scripts/ 完整。再对 Agent 说「列出 ebook-downloader 的步骤」，应输出 7 步管道。
+```bash
+# 克隆仓库
+git clone https://github.com/Callioper/agent-ebook-downloader.git
+cd agent-ebook-downloader
+
+# 复制配置文件
+cp config.yaml.example config.yaml
+# 编辑 config.yaml 填入你的环境参数
+
+# 验证安装
+python3 scripts/parse_bookmark_hierarchy.py
+```
+
+### 验证安装
+
+1. 运行 `python3 scripts/parse_bookmark_hierarchy.py` 输出 4 组测试，确认 scripts/ 完整
+2. 对 Agent 说「列出 ebook-downloader 的步骤」，应输出 6 步管道
 
 ### 安装故障快速排查
 
-`npx skills: command not found` 意味着 Node.js 版本太低（需要 ≥ 18），运行 `node --version` 确认后升级即可。`git clone` 权限拒绝说明仓库地址不对或用了 SSH 但没配 key，确认 https://github.com/Callioper/ebook-downloader 在浏览器能打开，改用 HTTPS 地址。Agent 不识别 skill 通常是因为 SKILL.md 没放在正确的目录——去看 `npx skills list` 或手动检查文件路径。GitHub 克隆超时的话可以先 `git clone` 到本地再 `npx skills add ./local-path` 安装。
+| 症状 | 原因 | 解决方案 |
+|------|------|----------|
+| `npx skills: command not found` | Node.js 版本太低 | 需要 ≥ 18，运行 `node --version` 确认后升级 |
+| `git clone` 权限拒绝 | 仓库地址不对或 SSH 没配 key | 确认 https://github.com/Callioper/agent-ebook-downloader 在浏览器能打开，改用 HTTPS |
+| Agent 不识别 skill | SKILL.md 没放在正确的目录 | 去看 `npx skills list` 或手动检查文件路径 |
+| GitHub 克隆超时 | 网络问题 | 先 `git clone` 到本地再 `npx skills add ./local-path` 安装 |
 
 ---
 
