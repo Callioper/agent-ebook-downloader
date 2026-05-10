@@ -1,8 +1,16 @@
-# Ebook Downloader — Agent Skill
+# 📚 Agent Ebook Downloader
 
-一个 **6 步骤电子书下载自动化管道**。从书名/ISBN/SS 码出发，输出带 OCR 文字层和多级书签的 PDF + 分享直链。核心的搜索→下载→OCR 三步闭环不需要任何本地服务即可跑通（见 `references/evaluation-cases.md` 的零基础设施路径）。书签注入和上传分享为可选增强功能。
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Agent](https://img.shields.io/badge/AI%20Agent-Skill-009688?style=for-the-badge&logo=openai&logoColor=white)]()
+[![OCR](https://img.shields.io/badge/OCR-PaddleOCR%20%7C%20ocrmypdf-orange?style=for-the-badge)](https://github.com/PaddlePaddle/PaddleOCR)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
+[![Purpose](https://img.shields.io/badge/Purpose-eBook%20Download%20%7C%20OCR%20%7C%20Bookmark-blueviolet?style=for-the-badge)]()
 
-> 首次使用对 Agent 说「配置 ebook-downloader」，Agent 会逐项询问你的环境情况并输出定制化安装方案。
+> **6 步骤电子书下载自动化管道。从书名/ISBN/SS 码出发，输出带 OCR 文字层和多级书签的 PDF + 分享直链。**
+
+Agent Ebook Downloader 是一个 **AI Agent 技能（Skill）**，专为自动化电子书下载管道设计。它从书名/ISBN/SS 码出发，通过检索元数据 → 下载 PDF → OCR 识别 → 书签注入 → 上传分享的完整流程，输出带 OCR 文字层和多级书签的专业 PDF。核心的搜索→下载→OCR 三步闭环不需要任何本地服务即可跑通。
+
+> **首次使用:** 对 Agent 说「配置 ebook-downloader」，Agent 会逐项询问你的环境情况并输出定制化安装方案。
 
 ---
 
