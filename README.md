@@ -171,6 +171,22 @@ proxy:
 
 ---
 
+## 🛠️ 技术栈
+
+| 类别 | 技术 |
+|------|------|
+| **Agent 框架** | SKILL.md 指令文件，支持 50+ 种 AI Agent |
+| **脚本语言** | Python 3.10+ |
+| **PDF 处理** | PyMuPDF (fitz), OCRmyPDF, pikepdf |
+| **OCR 引擎** | PaddleOCR (PP-OCRv5), ocrmypdf-paddleocr |
+| **书签处理** | pikepdf, PyMuPDF, 自研层级推断引擎 |
+| **数据源** | EbookDatabase (SQLite), Anna's Archive, NLC, 书葵网 |
+| **下载管理** | stacks (Docker), FlareSolverr, curl |
+| **文件存储** | Z-File, S3, Nextcloud, MinIO |
+| **配置管理** | YAML, 环境变量 |
+
+---
+
 ## 仓库文件结构
 
 ```
