@@ -124,36 +124,48 @@ python3 scripts/parse_bookmark_hierarchy.py
 | 配置项 | 说明 | 默认值 |
 |--------|------|--------|
 | **数据库** | | |
-| EbookDatabase 地址 | 本地 SQLite 数据库 | `http://localhost:10223` |
+| EbookDatabase 地址 | 本地 SQLite 数据库 | `http://127.0.0.1:10223` |
 | **下载** | | |
-| 下载管理器地址 | stacks Docker 服务 | `http://localhost:7788` |
-| 下载 API Key | stacks 认证密钥 | 可选 |
-| HTTP 代理 | 外网访问（中国大陆） | `http://127.0.0.1:7890` |
-| **OCR** | | |
-| OCR 引擎 | ocrmypdf + PaddleOCR | `paddleocr` |
-| 并发线程数 | PaddleOCR 必须为 1 | `1` |
-| **书签** | | |
-| 书签数据源 | 书葵网 | `shukui.net` |
-| **上传** | | |
-| 上传服务地址 | Z-File / S3 等 | 可选 |
-| 上传 Token | 认证凭证 | 可选 |
+| 下载管理器地址 | stacks Docker 服务 | `http://127.0.0.1:7788` |
+| 下载 API Key | stacks 认证密钥 | 必需 |
+| **OCR（MinerU）** | | |
+| mineru.enabled | 启用 MinerU 高精度模式 | `false` |
+| mineru.webui_url | MinerU WebUI 地址 | `http://127.0.0.1:7860` |
+| mineru.api_url | MinerU API 地址 | `http://127.0.0.1:8000` |
 | **通知** | | |
-| 消息通道 | Telegram / 飞书 / 企业微信 | 可选 |
+| notify.enabled | 启用通知 | `false` |
+| notify.channel | 通知渠道：`qqbot` / `telegram` / `feishu` / `none` | `none` |
+| **代理** | | |
+| proxy.http | HTTP 代理地址 | 空 |
+| proxy.https | HTTPS 代理地址 | 空 |
 
-### 环境变量
+### 配置示例
 
-```bash
-# 下载管理器
-export DOWNLOAD_MANAGER_URL="http://localhost:7788"
-export DOWNLOAD_API_KEY="sk-xxxxxxxx"
+```yaml
+# config.yaml（从 config.yaml.example 复制后填入实际值）
+ebookdb:
+  url: "http://127.0.0.1:10223"
 
-# 上传服务
-export UPLOAD_SERVICE_URL="http://your-zfile-host:32771"
-export UPLOAD_TOKEN="your-auth-token"
+download_manager:
+  url: "http://127.0.0.1:7788"
+  api_key: "sk-xxxxxxxx"          # 必需：stacks Admin API Key
 
-# 代理（如需要）
-export http_proxy="http://127.0.0.1:7890"
-export https_proxy="http://127.0.0.1:7890"
+# 可选：MinerU 高精度 OCR（不配则默认用 ocrmypdf+PaddleOCR）
+mineru:
+  enabled: false
+  webui_url: "http://127.0.0.1:7860"
+  api_url: "http://127.0.0.1:8000"
+
+# 可选：通知（管道完成时发送报告）
+notify:
+  enabled: false
+  channel: "none"                 # qqbot / telegram / feishu / none
+
+# 可选：代理（国内网络需要）
+proxy:
+  http: ""
+  https: ""
+  no_proxy: "127.0.0.1,localhost"
 ```
 
 ---
