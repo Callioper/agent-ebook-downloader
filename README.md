@@ -295,7 +295,7 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 1. 确认数据源可用：`curl http://localhost:10223/search?q=测试`
 2. 如果返回空或超时，检查数据库服务是否在运行
 3. 如果数据库正常但搜不到结果，去掉书名中的标点符号重试
-4. NLC 主要收录学术专著——通俗小说、网络文学通常查不到
+4. NLC 主要收录学术专著（政府出版物、外文原版书等），通俗小说、网络文学通常查不到——这不是 bug，是 NLC 馆藏范围决定的
 
 </details>
 
@@ -304,7 +304,7 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 **症状：** Anna's Archive 搜索返回空或超时。
 
-1. 确认代理环境变量已设置：`echo $http_proxy`
+1. 确认代理环境变量已设置：`echo $http_proxy` 和 `echo $https_proxy`（Anna's Archive 是 HTTPS）
 2. 测试代理连通性：`curl -x http://127.0.0.1:7890 https://annas-archive.gd`
 3. 如果代理正常但仍超时，可能是 Anna's Archive 维护中，等待 1-2 小时
 
@@ -313,6 +313,13 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 1. 运行 `docker ps | grep stacks` 确认容器在跑
 2. 如果没在跑，`docker start stacks` 启动它
 3. 参考 [stacks 部署指南](https://github.com/annas-archive/stacks)
+
+**症状：** 下载完成但文件是 `.zip`。
+
+1. 用 `file downloaded_file` 检查真实类型——可能是纯 PDF 被错误命名（文件头 `%PDF-1.4`），直接重命名为 `.pdf`
+2. 如果是 ZIP 包含 PDG/JPG 图片序列，用 Pillow + PyMuPDF 逐页合成为 PDF
+3. 排查命令：`file downloaded_file`、`unzip -l downloaded_file`、`head -c 100 downloaded_file | xxd`
+4. 更多下载后文件类型修正场景见 `references/download-troubleshooting.md`
 
 </details>
 
@@ -329,6 +336,13 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 完整实证见 `references/ghostscript-ocr-corruption.md`，压缩只能用 `ocrmypdf --optimize 1` 或 `qpdf --recompress-flate`。
 
+**症状：** `KeyError: 'text_word_region'` 或 `ZeroDivisionError`。
+
+1. `KeyError: 'text_word_region'` 是 PaddleOCR 2.9.1+ 的 API 变更——`return_word_box=True` 参数行为变化导致，降级到 2.8.x 或更新 ocrmypdf-paddleocr 适配层
+2. `ZeroDivisionError` 通常是 PDF 元数据中 DPI=0 导致，用 `python3 -c "import fitz; doc=fitz.open('file.pdf'); print(doc[0].rect)"` 检查页面尺寸
+
+> **WSL2 用户注意：** WSL2 的 systemd 会自动清理 `/tmp`，OCR 中间文件可能被删除导致失败。建议将工作目录设为 `~/tmp/ocrmypdf` 而非 `/tmp`。
+
 </details>
 
 <details>
@@ -336,7 +350,7 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 **症状：** pikepdf 报 `PdfError` 或权限错误。
 
-1. 用 `qpdf --decrypt input.pdf output.pdf` 移除限制后重试
+1. 用 `qpdf --decrypt input.pdf output.pdf` 移除限制后重试（注意：`--decrypt` 只移除编辑/打印限制，不能破解用户密码）
 2. 完整排查指南见 `references/bookmark-troubleshooting.md`
 
 **症状：** 注入的书签页码对不上。
