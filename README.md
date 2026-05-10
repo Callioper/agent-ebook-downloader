@@ -411,9 +411,27 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 此 skill 最初在 Hermes Agent + WSL2 环境中为中文学术图书下载开发，历经多个大版本迭代。关键里程碑包括：PaddleOCR 3.2.0 兼容性修复（v12）、ISBN 检索模式与判空保护（v13）、OCR 乱码防御机制的建立（v14，发现 `--jobs > 1` 100% 产生乱码）、Ghostscript 的彻底移除（v15.1，实证 `pdfwrite` 摧毁 CJK 文字层）、书签层级推断引擎的引入。v15.1 起作为通用参考架构公开发布。
 
-## 贡献
+---
 
-这是一个参考架构，欢迎提交适配案例到适配备忘表格、报告你环境中复现的问题、或改进 SKILL.md 让它作为 Agent 指令更准确。
+## 🤝 贡献
+
+这是一个参考架构，欢迎提交：
+- 适配案例到适配备忘表格
+- 你环境中复现的问题
+- 改进 SKILL.md 让它作为 Agent 指令更准确
+
+### 开发规范
+
+- 提交前运行 `python3 scripts/parse_bookmark_hierarchy.py` 确认脚本正常
+- 遵循现有代码风格（4 空格缩进，中文注释）
+- 新增功能请更新对应的 `references/` 文档
+
+### 问题反馈
+
+遇到 Bug？[提交 Issue](https://github.com/Callioper/agent-ebook-downloader/issues/new) 请提供：
+- 完整的错误日志
+- 你的环境信息（OS、Python 版本、Agent 类型）
+- 复现步骤
 
 ## 许可
 
