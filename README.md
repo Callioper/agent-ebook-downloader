@@ -363,6 +363,25 @@ PDF 的「逻辑页码」和「物理页码」可能不一致。比如封面、�
 
 ---
 
+## 🙏 致谢
+
+| 项目 | 用途 |
+|------|------|
+| [EbookDatabase](https://github.com/Hellohistory/EbookDatabase) | 本地图书元数据 SQLite 数据库 |
+| [Anna's Archive](https://annas-archive.org/) | 全球图书元数据与下载源 |
+| [stacks](https://github.com/annas-archive/stacks) | Anna's Archive 下载管理器 |
+| [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) | Cloudflare / DDoS-Guard 自动绕过 |
+| [OCRmyPDF](https://github.com/ocrmypdf/OCRmyPDF) | PDF OCR 文字层添加 |
+| [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) | 中文 OCR 识别引擎（PP-OCRv5） |
+| [PyMuPDF](https://github.com/pymupdf/PyMuPDF) | PDF 渲染、文本提取、字体嵌入 |
+| [pikepdf](https://github.com/pikepdf/pikepdf) | PDF 书签注入与编辑 |
+| [NLCISBNPlugin](https://github.com/DoiiarX/NLCISBNPlugin) | NLC 国家图书馆 ISBN 查询 |
+| [书葵网](https://www.shukui.net/) | 图书目录/书签数据源 |
+| [Z-File](https://github.com/zhaojun1998/zfile) | 文件存储与直链分享 |
+| [cpolar](https://cpolar.com) | 内网穿透（外网分享） |
+
+---
+
 ## 版本历史
 
 此 skill 最初在 Hermes Agent + WSL2 环境中为中文学术图书下载开发，历经多个大版本迭代。关键里程碑包括：PaddleOCR 3.2.0 兼容性修复（v12）、ISBN 检索模式与判空保护（v13）、OCR 乱码防御机制的建立（v14，发现 `--jobs > 1` 100% 产生乱码）、Ghostscript 的彻底移除（v15.1，实证 `pdfwrite` 摧毁 CJK 文字层）、书签层级推断引擎的引入。v15.1 起作为通用参考架构公开发布。
