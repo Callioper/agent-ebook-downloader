@@ -14,6 +14,19 @@ Agent Ebook Downloader 是一个 **AI Agent 技能（Skill）**，专为自动�
 
 ---
 
+## ✨ 功能特性
+
+-   **🔍 智能检索**: 本地 EbookDatabase 模糊搜索 → NLC 联合编目校验 → 书葵网书签获取，无数据库时降级为纯 Anna's Archive 搜索
+-   **📥 多源下载**: Anna's Archive MD5 精确匹配 → stacks 下载管理器排队，无 stacks 时尝试 curl 直链下载
+-   **⚙️ OCR 文字层**: ocrmypdf + PaddleOCR（`--jobs 1` 防乱码），自动验证 CJK 文字比率，已有文字层则跳过
+-   **📑 智能书签**: 书葵网书签优先 → 降级A（仅目录页）→ 降级B（AI Vision），自动推断层级结构
+-   **📤 上传分享**: Z-File / S3 等文件存储 + 直链生成，支持内网穿透外网分享
+-   **📋 结构化报告**: 每次下载完成后输出标准化报告，包含 ISBN、文件大小、OCR 状态等元数据
+-   **🛡️ 失败恢复**: 每步均有降级方案，网络中断、OCR 失败、书签异常均可自动恢复或跳过
+-   **🔧 零基础设施可跑**: 搜索→下载→OCR 核心闭环无需任何本地服务，详见 `references/evaluation-cases.md`
+
+---
+
 ## 快速开始
 
 **最简单的方式：把下面这段话原样发给你的 AI Agent。**
