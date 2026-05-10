@@ -284,6 +284,8 @@ class ConfigReader:
 # ── CLI 测试入口 ──────────────────────────────────────
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     if "--help" in sys.argv or "-h" in sys.argv:
         print(f"ebook-downloader 配置读取工具")
         print(f"")

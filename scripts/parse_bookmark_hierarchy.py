@@ -154,6 +154,8 @@ def parse_bookmark_hierarchy(bookmark_text: str) -> list:
 
 # ── CLI 入口 ──
 if __name__ == '__main__':
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     if len(sys.argv) < 2:
         # 内置测试
         test_cases = {
