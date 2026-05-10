@@ -25,13 +25,13 @@ Bookmark injection engine. Injects bookmarks into PDF files with offset calculat
 python3 scripts/inject_bookmarks.py input.pdf bookmarks.txt output.pdf
 
 # With offset
-python3 scripts/inject_bookmarks.py input.pdf bookmarks.txt output.pdf --offset 10
+python3 scripts/inject_bookmarks.py input.pdf bookmarks.txt --offset 10
 
-# OCR mode
-python3 scripts/inject_bookmarks.py input.pdf bookmarks.txt output.pdf --ocr
+# With OCR cross-reference (pass OCR PDF path)
+python3 scripts/inject_bookmarks.py input.pdf bookmarks.txt --ocr ocr_version.pdf
 
-# TOC only mode
-python3 scripts/inject_bookmarks.py input.pdf bookmarks.txt output.pdf --toc-only
+# TOC only mode (adds only the TOC page bookmark)
+python3 scripts/inject_bookmarks.py --toc-only input.pdf output.pdf
 ```
 
 ### config_reader.py
@@ -40,13 +40,18 @@ Configuration reader module. Reads `config.yaml` with type-safe getters and mask
 
 **Usage:**
 ```bash
+# Display channel configuration status (sensitive values masked)
 python3 scripts/config_reader.py
-```
 
-Running without arguments displays the current configuration status (with sensitive values masked).
+# Output full config as JSON (sensitive values masked)
+python3 scripts/config_reader.py --json
+
+# Check if minimal config is complete (exit code reflects result)
+python3 scripts/config_reader.py --check
+```
 
 ## Dependencies
 
 - `parse_bookmark_hierarchy.py`: Pure Python, no external dependencies
-- `inject_bookmarks.py`: `pikepdf`, `PyMuPDF`
+- `inject_bookmarks.py`: `PyMuPDF`
 - `config_reader.py`: `pyyaml`
