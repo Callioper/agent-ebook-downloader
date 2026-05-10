@@ -117,6 +117,47 @@ python3 scripts/parse_bookmark_hierarchy.py
 
 ---
 
+## ⚙️ 配置
+
+将 `config.yaml.example` 复制为 `config.yaml`，填入你的环境参数。运行 `python3 scripts/config_reader.py` 确认配置状态。
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| **数据库** | | |
+| EbookDatabase 地址 | 本地 SQLite 数据库 | `http://localhost:10223` |
+| **下载** | | |
+| 下载管理器地址 | stacks Docker 服务 | `http://localhost:7788` |
+| 下载 API Key | stacks 认证密钥 | 可选 |
+| HTTP 代理 | 外网访问（中国大陆） | `http://127.0.0.1:7890` |
+| **OCR** | | |
+| OCR 引擎 | ocrmypdf + PaddleOCR | `paddleocr` |
+| 并发线程数 | PaddleOCR 必须为 1 | `1` |
+| **书签** | | |
+| 书签数据源 | 书葵网 | `shukui.net` |
+| **上传** | | |
+| 上传服务地址 | Z-File / S3 等 | 可选 |
+| 上传 Token | 认证凭证 | 可选 |
+| **通知** | | |
+| 消息通道 | Telegram / 飞书 / 企业微信 | 可选 |
+
+### 环境变量
+
+```bash
+# 下载管理器
+export DOWNLOAD_MANAGER_URL="http://localhost:7788"
+export DOWNLOAD_API_KEY="sk-xxxxxxxx"
+
+# 上传服务
+export UPLOAD_SERVICE_URL="http://your-zfile-host:32771"
+export UPLOAD_TOKEN="your-auth-token"
+
+# 代理（如需要）
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+```
+
+---
+
 ## 仓库文件结构
 
 ```
