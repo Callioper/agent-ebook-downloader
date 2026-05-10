@@ -27,6 +27,44 @@ Agent Ebook Downloader 是一个 **AI Agent 技能（Skill）**，专为自动�
 
 ---
 
+## 🏗️ 架构
+
+```mermaid
+graph TD
+    A[用户输入: 书名/ISBN/SS码] --> B[① 检索元数据]
+    B --> C[② 下载 PDF]
+    C --> D[③ OCR 识别]
+    D --> E[④ 生成书签]
+    E --> F[⑤ 上传 + 直链]
+    F --> G[⑥ 报告输出]
+
+    B --> B1[EbookDatabase<br/>本地 SQLite]
+    B --> B2[NLC 联合编目]
+    B --> B3[书葵网书签]
+
+    C --> C1[Anna's Archive<br/>MD5 匹配]
+    C --> C2[stacks 下载管理器]
+
+    D --> D1[ocrmypdf<br/>+ PaddleOCR]
+
+    E --> E1[书葵网书签]
+    E --> E2[目录页提取]
+    E --> E3[AI Vision TOC]
+
+    F --> F1[Z-File / S3<br/>直链分享]
+```
+
+### 处理流程
+
+1. **检索元数据**: 输入书名/ISBN/SS码 → 本地 DB 模糊搜索 → NLC 校验 → 书葵网取书签（无数据库时降级为纯 Anna's Archive 搜索）
+2. **下载 PDF**: Anna's Archive 搜 MD5 → stacks 下载管理器排队（无 stacks 时尝试 curl 直链下载）
+3. **OCR 识别**: ocrmypdf + PaddleOCR（`--jobs 1` 防乱码）→ 验证 CJK 文字比率（已有文字层则跳过）
+4. **生成书签**: 书葵网书签优先 → 降级A（仅目录页）→ 降级B（AI Vision），脚本：`scripts/inject_bookmarks.py`
+5. **上传 + 直链**: 可选，无后端则跳过，支持 Z-File / S3 等
+6. **报告输出**: config.yaml 打码展示后按 `report-template.md` 输出结构化报告
+
+---
+
 ## 快速开始
 
 **最简单的方式：把下面这段话原样发给你的 AI Agent。**
