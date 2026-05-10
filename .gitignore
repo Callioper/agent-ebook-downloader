@@ -1,16 +1,35 @@
-config.yaml
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-dist/
-build/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+venv-paddle311/
+.venv/
 .eggs/
 *.egg
-.venv/
-venv/
-.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+config.yaml
+downloads/
 *.pdf
 *.epub
+*.djvu
 *.mobi
-downloads/
+.env
+
+# Build
+dist/
+build/
+*.egg-info/
