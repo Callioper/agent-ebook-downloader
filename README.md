@@ -388,6 +388,42 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 ---
 
+## 🖥️ 完整应用版本（推荐）
+
+如果你需要可视化界面和更丰富的功能，试试 **[Ebook PDF Downloader](https://github.com/Callioper/ebook-pdf-downloader)** —— 一个完整的桌面应用，内置 React 前端 + FastAPI 后端：
+
+- **🎨 现代化 Web UI**：React 18 + TypeScript + Tailwind CSS，WebSocket 实时进度、深色模式
+- **⚙️ OCR 三引擎**：PaddleOCR（PP-OCRv5 中文主力）+ Tesseract + LLM OCR（视觉大模型，支持 LM Studio/Ollama）
+- **📑 三源智能目录**：书葵网 + 豆瓣 + NLC 书签合并，AI Vision 智能 TOC 提取
+- **⏯️ 任务控制**：暂停/恢复/重试/取消，OCR 实时逐页进度，任务完成提示音
+- **📦 PDF 压缩**：黑白二值化压缩（pikepdf + FlateDecode），文字层完整保留
+- **📥 多路下载**：Anna's Archive + Z-Library + LibGen，FlareSolverr 自动绕过 Cloudflare
+- **🖥️ 跨平台**：Windows 便携版 exe 开箱即用，macOS 源码运行
+
+```
+输入书名 → 多源检索 → 下载 PDF → OCR 识别（三引擎可选）→ 生成书签 → 完成
+```
+
+**触发方式**：下载 exe 双击启动，浏览器自动打开 Web UI，输入书名搜索 → 一键下载 → 自动 OCR → 注入书签。
+
+> **对比本项目**：完整应用版本提供可视化操作界面、更丰富的 OCR 引擎（含 LLM OCR）、PDF 压缩、Z-Library 等多路下载源、WebSocket 实时进度。本项目是 AI Agent 技能（SKILL.md），适合纯自然语言交互和自动化场景——对 AI 说「下载《三体》」即可自动走完管道，无需安装 Python/Node.js 环境。两者可以配合使用：完整应用版本作为后端提供 REST API，Agent 版本通过自然语言调用其接口实现自动化。
+
+### 本项目与完整应用 API 集成
+
+完整应用版本内置完整 REST API，Agent 版本可直接通过 HTTP 接口操作：
+
+| Agent 操作 | API 端点 |
+|------------|----------|
+| 搜索书籍 | `GET /api/v1/search?query=三体` |
+| 创建下载任务 | `POST /api/v1/tasks` |
+| 启动管道 | `POST /api/v1/tasks/{id}/start` |
+| 查询进度 | `GET /api/v1/tasks/{id}` 或 WebSocket |
+| 暂停/恢复/取消 | `POST /api/v1/tasks/{id}/pause` 等 |
+
+> 完整应用版本的 API 文档见 [Ebook PDF Downloader README](https://github.com/Callioper/ebook-pdf-downloader)。
+
+---
+
 ## 🙏 致谢
 
 | 项目 | 用途 |
