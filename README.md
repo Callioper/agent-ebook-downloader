@@ -428,7 +428,7 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 - **📑 三源智能目录**：书葵网 + 豆瓣 + NLC 书签合并，AI Vision 智能 TOC 提取
 - **⏯️ 任务控制**：暂停/恢复/重试/取消，OCR 实时逐页进度，任务完成提示音
 - **📦 PDF 压缩**：黑白二值化压缩（pikepdf + FlateDecode），文字层完整保留
-- **📥 多路下载**：Anna's Archive + Z-Library + LibGen，FlareSolverr 自动绕过 Cloudflare
+- **📥 多路下载**：Anna's Archive + Z-Library，FlareSolverr 自动绕过 Cloudflare
 - **🖥️ 跨平台**：Windows 便携版 exe 开箱即用，macOS 源码运行
 
 ```

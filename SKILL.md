@@ -276,7 +276,7 @@ export DOWNLOAD_API_KEY="sk-你的-API-Key"
 
 > 如果没有部署 stacks，步骤② 可以直接用 `curl` 从 Anna's Archive 下载页面提取直链，但成功率低于 stacks（Anna's Archive 有 Cloudflare 保护，需要 FlareSolverr 反爬）。
 
-> **备选方案：** 也可用 Z-Library、LibGen 等作为下载源。Anna's Archive 是首选因为它通过 MD5 直接定位文件。
+> **备选方案：** 也可用 Z-Library 等作为下载源。Anna's Archive 是首选因为它通过 MD5 直接定位文件。
 
 **⚠️ 文件类型自动修正：**
 - 扩展名 `.zip` 但内容是 `%PDF-1.4` → 重命名为 `.pdf`
