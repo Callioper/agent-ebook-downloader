@@ -503,10 +503,6 @@ Agent 加载此 skill 后，说「下载 《书名》」「检索并下载 ISBN 
 
 ## 📄 许可
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-purple?style=for-the-badge" /></a>
-</p>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-purple?style=for-the-badge" /></a>
 
-<p align="center">
-  MIT
-</p>
+MIT © Agent Ebook Downloader
