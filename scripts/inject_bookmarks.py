@@ -313,8 +313,8 @@ def inject_bookmarks_smart(
         return [[1, "目 录", toc_page + 1]] if toc_page >= 0 else []
 
     # ── 确定偏移策略 ──
+    zones = None
     if known_offset is not None:
-        zones = None
         offset = known_offset
         print(f"[inject] 使用用户指定偏移量: {offset:+d}")
     elif ocr_pdf and os.path.exists(ocr_pdf):
@@ -323,13 +323,11 @@ def inject_bookmarks_smart(
             print(f"[inject] label 锚点法 offset={offset:+d} 不可靠，回退到关键词搜索法")
             result = smart_offset_detect_v2(doc, bookmarks)
         else:
-            zones = None
             print(f"[inject] label 锚点法 offset={offset:+d}")
     else:
         result = smart_offset_detect_v2(doc, bookmarks)
         if result[0] == "single":
             offset = result[1]
-            zones = None
         else:
             offset = None
             zones = result[1]
@@ -379,8 +377,15 @@ def inject_bookmarks_smart(
     if zones:
         zone_info = f"，分段：zone1≤{zones['boundary']}用{zones['zone1_offset']:+d}，zone2>{zones['boundary']}用{zones['zone2_offset']:+d}"
 
+    if zones:
+        display_offset = "auto"
+    elif offset is not None:
+        display_offset = f"{offset:+d}"
+    else:
+        display_offset = "+0"
+
     print(f"[inject] 书签注入完成：{len(toc)} 条（含目录页），跳过 {skipped} 条 phantom，"
-          f"offset={offset if offset is not None else f'{zones[\"zone1_offset\"]:+d}'}{zone_info}")
+          f"offset={display_offset}{zone_info}")
     print(f"[inject] 保存至: {output_path}")
     return toc
 
